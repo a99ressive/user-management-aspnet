@@ -1,0 +1,121 @@
+﻿@model List<UserManagement.Models.User>
+
+@{
+    ViewData["Title"] = "Users";
+}
+
+<h2 class="mb-3">Users</h2>
+
+<form method="post" id="users-form">
+    <!-- TOOLBAR -->
+    <div class="mb-3">
+        <div class="btn-toolbar" role="toolbar">
+            <div class="btn-group me-2">
+                <span data-bs-toggle="tooltip" title="Block selected users">
+                    <button type="submit"
+                            formaction="/Users/Block"
+                            class="btn btn-danger"
+                            id="btn-block"
+                            disabled>
+                        Block
+                    </button>
+                </span>
+            </div>
+
+            <div class="btn-group me-2">
+                <span data-bs-toggle="tooltip" title="Unblock selected users">
+                    <button type="submit"
+                            formaction="/Users/Unblock"
+                            class="btn btn-outline-success"
+                            id="btn-unblock"
+                            disabled>
+                        <i class="bi bi-unlock"></i>
+                    </button>
+                </span>
+            </div>
+
+            <div class="btn-group me-2">
+                <span data-bs-toggle="tooltip" title="Delete selected users">
+                    <button type="submit"
+                            formaction="/Users/Delete"
+                            class="btn btn-outline-danger"
+                            id="btn-delete"
+                            disabled>
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </span>
+            </div>
+
+            <div class="btn-group">
+                <button type="submit"
+                        formaction="/Users/DeleteUnverified"
+                        class="btn btn-outline-warning"
+                        data-bs-toggle="tooltip"
+                        title="Delete all unverified users">
+                    <i class="bi bi-person-x"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABLE -->
+    <table class="table table-bordered table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th class="text-center" style="width: 40px;">
+                    <input type="checkbox" id="select-all" />
+                </th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Last login</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td class="text-center">
+                        <input type="checkbox"
+                               name="userIds"
+                               value="@user.Id"
+                               class="user-checkbox" />
+                    </td>
+                    <td>@user.Email</td>
+                    <td>@user.Email</td>
+                    <td class="text-muted">
+                        @(user.LastLoginAt?.ToString("yyyy-MM-dd HH:mm") ?? "-")
+                    </td>
+                    <td>@user.Status</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</form>
+
+@section Scripts {
+    <script>
+        const selectAll = document.getElementById('select-all');
+        const checkboxes = document.querySelectorAll('.user-checkbox');
+
+        const blockBtn = document.getElementById('btn-block');
+        const unblockBtn = document.getElementById('btn-unblock');
+        const deleteBtn = document.getElementById('btn-delete');
+
+        function updateToolbar() {
+            const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+            blockBtn.disabled = !anyChecked;
+            unblockBtn.disabled = !anyChecked;
+            deleteBtn.disabled = !anyChecked;
+        }
+
+        selectAll.addEventListener('change', () => {
+            checkboxes.forEach(cb => cb.checked = selectAll.checked);
+            updateToolbar();
+        });
+
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', updateToolbar);
+        });
+    </script>
+}

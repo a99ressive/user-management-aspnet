@@ -1,0 +1,33 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+<script>
+    const selectAll = document.getElementById('select-all');
+    const checkboxes = document.querySelectorAll('.user-checkbox');
+    const blockBtn = document.getElementById('btn-block');
+    const unblockBtn = document.getElementById('btn-unblock');
+    const deleteBtn = document.getElementById('btn-delete');
+
+    function updateToolbar() {
+        const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+        blockBtn.disabled = !anyChecked;
+        unblockBtn.disabled = !anyChecked;
+        deleteBtn.disabled = !anyChecked;
+    }
+
+    selectAll.addEventListener('change', () => {
+        checkboxes.forEach(cb => cb.checked = selectAll.checked);
+        updateToolbar();
+    });
+
+    checkboxes.forEach(cb => {
+        cb.addEventListener('change', updateToolbar);
+    });
+</script>
+
