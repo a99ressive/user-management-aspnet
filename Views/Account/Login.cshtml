@@ -1,9 +1,9 @@
 ﻿@model UserManagement.Models.ViewModels.LoginViewModel
 
-@if (TempData["BlockedMessage"] != null)
+@if (ViewBag.Blocked == true)
 {
     <div class="alert alert-danger">
-        @TempData["BlockedMessage"]
+        Your account has been blocked.
     </div>
 }
 

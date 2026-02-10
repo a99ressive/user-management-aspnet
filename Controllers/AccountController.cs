@@ -69,11 +69,7 @@ public class AccountController : Controller
     [HttpGet]
     public IActionResult Login(bool blocked = false)
     {
-        if (blocked)
-        {
-            TempData["BlockedMessage"] = "Your account has been blocked by administrator.";
-        }
-
+        ViewBag.Blocked = blocked;
         return View();
     }
 
@@ -136,7 +132,14 @@ public class AccountController : Controller
         var user = _db.Users.FirstOrDefault(u => u.Id.ToString() == userId);
 
         if (user == null)
+        {
             return RedirectToAction("Login");
+        }
+
+        if (user.Status == "Blocked")
+        {
+            return RedirectToAction("Login");
+        }
 
         return View(user);
     }
@@ -149,7 +152,9 @@ public class AccountController : Controller
         var user = _db.Users.FirstOrDefault(u => u.Id.ToString() == userId);
 
         if (user == null)
+        {
             return RedirectToAction("Login");
+        }
 
         if (user.Status == "Unverified")
         {
