@@ -53,7 +53,7 @@ public class AccountController : Controller
         }
         catch (DbUpdateException)
         {
-            ModelState.AddModelError("", "User with this email already exists.");
+            ModelState.AddModelError(nameof(model.Email), "User with this email already exists.");
             return View(model);
         }
 
