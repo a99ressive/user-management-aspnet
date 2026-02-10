@@ -1,5 +1,15 @@
 ﻿@model UserManagement.Models.ViewModels.RegisterViewModel
 
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <div>@error.ErrorMessage</div>
+        }
+    </div>
+}
+
 <h2>Register</h2>
 
 <form method="post">
