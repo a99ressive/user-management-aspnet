@@ -26,6 +26,8 @@ public class UsersController : Controller
     [HttpPost]
     public IActionResult Block(Guid[] userIds)
     {
+        if (!ModelState.IsValid)
+            return RedirectToAction("Index");
         var users = _db.Users
             .Where(u => userIds.Contains(u.Id))
             .ToList();
@@ -47,6 +49,8 @@ public class UsersController : Controller
     [HttpPost]
     public IActionResult Unblock(Guid[] userIds)
     {
+        if (!ModelState.IsValid)
+            return RedirectToAction("Index");
         var users = _db.Users
             .Where(u => userIds.Contains(u.Id))
             .ToList();
@@ -67,6 +71,9 @@ public class UsersController : Controller
     [HttpPost]
     public IActionResult Delete(Guid[] userIds)
     {
+        if (!ModelState.IsValid)
+            return RedirectToAction("Index");
+
         var users = _db.Users
             .Where(u => userIds.Contains(u.Id))
             .ToList();

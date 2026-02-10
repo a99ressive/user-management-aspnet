@@ -73,7 +73,7 @@ public class AccountController : Controller
         if (!ModelState.IsValid)
             return View(model);
 
-        var user = _db.Users.FirstOrDefault(u => u.Email == model.Email);
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
 
         if (user == null || user.Status == "Blocked")
         {
@@ -107,7 +107,7 @@ public class AccountController : Controller
         );
 
         user.LastLoginAt = DateTime.UtcNow;
-        _db.SaveChanges();
+        await _db.SaveChangesAsync();
 
         return RedirectToAction("Index", "Users");
     }
