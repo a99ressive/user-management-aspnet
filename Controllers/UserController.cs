@@ -26,22 +26,23 @@ public class UsersController : Controller
     [HttpPost]
     public IActionResult Block(Guid[] userIds)
     {
-        if (userIds.Length == 0)
-            return RedirectToAction("Index");
-
         var users = _db.Users
             .Where(u => userIds.Contains(u.Id))
             .ToList();
 
         foreach (var user in users)
         {
-            user.Status = "Blocked";
+            if (user.Status != "Blocked")
+            {
+                user.PreviousStatus = user.Status;
+                user.Status = "Blocked";
+            }
         }
 
         _db.SaveChanges();
-
         return RedirectToAction("Index");
     }
+
 
     [HttpPost]
     public IActionResult Unblock(Guid[] userIds)
@@ -53,11 +54,13 @@ public class UsersController : Controller
         foreach (var user in users)
         {
             if (user.Status == "Blocked")
-                user.Status = "Active";
+            {
+                user.Status = user.PreviousStatus ?? "Unverified";
+                user.PreviousStatus = null;
+            }
         }
 
         _db.SaveChanges();
-
         return RedirectToAction("Index");
     }
 
