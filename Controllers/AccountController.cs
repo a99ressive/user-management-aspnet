@@ -62,7 +62,6 @@ public class AccountController : Controller
             throw;
         }
 
-        TempData["Success"] = "Registration successful. Please check your email.";
         return RedirectToAction("Login");
     }
 
