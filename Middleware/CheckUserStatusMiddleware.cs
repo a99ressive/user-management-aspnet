@@ -43,7 +43,13 @@ public class CheckUserStatusMiddleware
 
     private static async Task SignOutAndRedirect(HttpContext context)
     {
+        context.Session?.Clear();
+
+        context.Items["Blocked"] = true;
+
         await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
         context.Response.Redirect("/Account/Login?blocked=true");
     }
+
 }

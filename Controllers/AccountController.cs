@@ -51,10 +51,15 @@ public class AccountController : Controller
             _db.Users.Add(user);
             await _db.SaveChangesAsync();
         }
-        catch (DbUpdateException)
+        catch (DbUpdateException ex)
         {
-            ModelState.AddModelError(nameof(model.Email), "User with this email already exists.");
-            return View(model);
+            if (ex.InnerException?.Message.Contains("IX_Users_Email") == true)
+            {
+                ModelState.AddModelError(nameof(model.Email), "User with this email already exists.");
+                return View(model);
+            }
+
+            throw;
         }
 
         TempData["Success"] = "Registration successful. Please check your email.";
@@ -64,12 +69,9 @@ public class AccountController : Controller
     [HttpGet]
     public IActionResult Login(bool blocked = false)
     {
-        if (!ModelState.IsValid)
-            return RedirectToAction("Index");
-
         if (blocked)
         {
-            ViewBag.BlockedMessage = "Your account has been blocked by administrator.";
+            TempData["BlockedMessage"] = "Your account has been blocked by administrator.";
         }
 
         return View();

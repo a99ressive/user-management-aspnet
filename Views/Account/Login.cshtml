@@ -1,6 +1,11 @@
 ﻿@model UserManagement.Models.ViewModels.LoginViewModel
 
-<h2>Login</h2>
+@if (TempData["BlockedMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["BlockedMessage"]
+    </div>
+}
 
 @if (!ViewData.ModelState.IsValid)
 {
@@ -11,6 +16,8 @@
         }
     </div>
 }
+
+<h2>Login</h2>
 
 <form method="post">
     <div class="mb-3">
