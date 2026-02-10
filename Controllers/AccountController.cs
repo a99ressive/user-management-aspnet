@@ -83,9 +83,15 @@ public class AccountController : Controller
 
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
 
-        if (user == null || user.Status == "Blocked")
+        if (user == null)
         {
-            ModelState.AddModelError("", "Invalid credentials.");
+            ModelState.AddModelError("", "Invalid email or password.");
+            return View(model);
+        }
+
+        if (user.Status == "Blocked")
+        {
+            ModelState.AddModelError("", "Your account has been blocked.");
             return View(model);
         }
 
@@ -94,7 +100,7 @@ public class AccountController : Controller
 
         if (result == PasswordVerificationResult.Failed)
         {
-            ModelState.AddModelError("", "Invalid email or password. Please try again.");
+            ModelState.AddModelError("", "Invalid email or password.");
             return View(model);
         }
 
