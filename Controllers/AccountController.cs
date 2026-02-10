@@ -38,6 +38,7 @@ public class AccountController : Controller
         var user = new User
         {
             Id = Guid.NewGuid(),
+            Name = model.Name,
             Email = model.Email,
             Status = "Unverified",
             CreatedAt = DateTime.UtcNow
