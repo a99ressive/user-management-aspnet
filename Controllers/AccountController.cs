@@ -62,8 +62,16 @@ public class AccountController : Controller
     }
 
     [HttpGet]
-    public IActionResult Login()
+    public IActionResult Login(bool blocked = false)
     {
+        if (!ModelState.IsValid)
+            return RedirectToAction("Index");
+
+        if (blocked)
+        {
+            ViewBag.BlockedMessage = "Your account has been blocked by administrator.";
+        }
+
         return View();
     }
 
@@ -86,7 +94,7 @@ public class AccountController : Controller
 
         if (result == PasswordVerificationResult.Failed)
         {
-            ModelState.AddModelError("", "Invalid credentials.");
+            ModelState.AddModelError("", "Invalid email or password. Please try again.");
             return View(model);
         }
 
