@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using UserManagement.Data;
 using UserManagement.Models;
 using UserManagement.Models.ViewModels;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 
 
 namespace UserManagement.Controllers;
@@ -109,6 +110,39 @@ public class AccountController : Controller
 
         return RedirectToAction("Index", "Users");
     }
+
+    [Authorize]
+    [HttpGet]
+    public IActionResult Verify()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var user = _db.Users.FirstOrDefault(u => u.Id.ToString() == userId);
+
+        if (user == null)
+            return RedirectToAction("Login");
+
+        return View(user);
+    }
+
+    [Authorize]
+    [HttpPost]
+    public IActionResult VerifyConfirmed()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var user = _db.Users.FirstOrDefault(u => u.Id.ToString() == userId);
+
+        if (user == null)
+            return RedirectToAction("Login");
+
+        if (user.Status == "Unverified")
+        {
+            user.Status = "Active";
+            _db.SaveChanges();
+        }
+
+        return RedirectToAction("Verify");
+    }
+
 
     [HttpPost]
     public async Task<IActionResult> Logout()

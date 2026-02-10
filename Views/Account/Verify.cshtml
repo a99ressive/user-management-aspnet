@@ -1,0 +1,28 @@
+﻿@model UserManagement.Models.User
+
+<h2>Email verification</h2>
+
+@if (Model.Status == "Active")
+{
+    <div class="alert alert-success">
+        You are already verified.
+    </div>
+}
+else if (Model.Status == "Unverified")
+{
+    <div class="alert alert-warning">
+        Your email is not verified.
+    </div>
+
+    <form asp-action="VerifyConfirmed" method="post">
+        <button class="btn btn-primary">
+            Click this button to verify your email
+        </button>
+    </form>
+}
+else if (Model.Status == "Blocked")
+{
+    <div class="alert alert-danger">
+        Your account is blocked and cannot be verified.
+    </div>
+}
